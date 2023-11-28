@@ -2,6 +2,14 @@
 import Image from 'next/image'
 import React, { useEffect } from 'react';
 import axios from "axios";
+
+
+export default function Home() {
+  const [ss, setss] = React.useState("")
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+};
 const handleSignIn=(event:React.FormEvent)=> {
   event.preventDefault();
   
@@ -63,22 +71,20 @@ const handleSignIn=(event:React.FormEvent)=> {
   // })
   .then(response => 
     {
+      if(response.data.got)
+        setss("Login Successfull")
+      else
+        setss("Invalid Login. Create account first.")
       // console.log(response.json());
       
       console.log(response)
     })
   .catch(error => {
     // Handle any errors
+    setss("Issue with server")
     console.error(error);
   });
 }
-
-export default function Home() {
-  const [ss, setss] = React.useState("")
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-};
   // axios.request({
   //   method: "post",
   //   // headers:headers,
@@ -143,6 +149,7 @@ export default function Home() {
             <input type="password" id="password" name="password" placeholder="Password" className='h-12 p-2 rounded-md text-black' />
             <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={handleSignIn}>Login</button>
         </form>
+        <p>{ss}</p>
       </div>
 
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
