@@ -11,6 +11,11 @@ const handleSignIn=(event:React.FormEvent)=> {
   const formData = new FormData();
   formData.append('uid', uname.value);
   formData.append('pswd', pwd.value);
+  console.log(formData)
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+};
   // var xhr = new XMLHttpRequest();
 
   // // Progress event listener
@@ -43,6 +48,7 @@ const handleSignIn=(event:React.FormEvent)=> {
   // xhr.send(file);
   axios.request({
     method: "post",
+    headers:headers,
     url: `https://listallfrompscale.vercel.app/api/login`,
     data: formData,
     // onUploadProgress: (progressEvent) => {
