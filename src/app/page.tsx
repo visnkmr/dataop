@@ -168,6 +168,7 @@ const createUser=(event:React.FormEvent)=> {
           <code className="font-mono font-bold">src/app/page.tsx</code>
         </p>
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
+        <p>{ss}</p>
         <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={()=>{setsa(false); setuname("");}}>logout</button>
           <a
             className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
@@ -196,7 +197,7 @@ const createUser=(event:React.FormEvent)=> {
       <input type="password" id="password" name="password" placeholder="Password" className='h-12 p-2 rounded-md text-black' />
       <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={handleSignIn}>Login</button>
     </form>
-    <p>{ss}</p>
+    
     <button type="button" className='p-2 h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={()=>setcreateuser(true)}>createuser</button>
   </div>
 ) : null}
@@ -207,7 +208,6 @@ const createUser=(event:React.FormEvent)=> {
       <input type="password" id="nupassword" name="password" placeholder="Password" className='h-12 p-2 rounded-md text-black' />
       <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={createUser}>Create User</button>
     </form>
-    <p>{ss}</p>
   </div>
 ) : null}
 
