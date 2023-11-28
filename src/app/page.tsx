@@ -7,6 +7,7 @@ import axios from "axios";
 export default function Home() {
   const [ss, setss] = React.useState("")
   const [showall, setsa] = React.useState(false)
+  const [showcreateuser, setcreateuser] = React.useState(false)
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
@@ -16,60 +17,13 @@ const handleSignIn=(event:React.FormEvent)=> {
   
   const uname = document.getElementById('username') as HTMLInputElement;
   const pwd = document.getElementById('password') as HTMLInputElement;
-  
-  // var xhr = new XMLHttpRequest();
-
-  // // Progress event listener
-  // xhr.upload.addEventListener("progress", function(event) {
-  //   if (event.lengthComputable) {
-  //     var percentComplete = (event.loaded / event.total) * 100;
-  //     console.log("Upload progress: " + percentComplete.toFixed(2) + "%");
-  //   }
-  // });
-
-  // // Upload completed event listener
-  // xhr.addEventListener("load", function() {
-  //   console.log("Upload completed");
-  // });
-
-  // // Upload failed event listener
-  // xhr.addEventListener("error", function() {
-  //   console.error("Upload failed");
-  // });
-
-  // // Set up the request
-
-  // // Set the Content-Type header
-  // xhr.open("POST", `http://${ipaddress}/api/upload`);
-  // xhr.setRequestHeader("Content-Type", "multipart/form-data");
-  // // xhr.setRequestHeader("Access-Control-Allow-Headers", "origin, content-type");
-  // // xhr.setRequestHeader("Access-Control-Allow-Credentials", "true");
-  // // xhr.setRequestHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-  // // xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-  // xhr.send(file);
   axios.request({
     method: "post",
-    // headers:headers,
     url: `https://listallfrompscale.vercel.app/api/login`,
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     data: {uid: uname.value, pswd: pwd.value}
-    // onUploadProgress: (progressEvent) => {
-    //   progressEvent.total
-    //   const percentCompleted = Math.round(
-    //     (progressEvent.loaded * 100) / progressEvent.total!
-    //   );
-    //   console.log(percentCompleted);
-    //   // Update your progress UI here
-    // },
+   
   })
-  // .then((response) => {
-  //   console.log(response.data);
-  //   // Handle the response here
-  // });
-  // fetch(`http://${ipaddress}/api/upload`, {
-  //   method: 'POST',
-  //   body: formData
-  // })
   .then(response => 
     {
       if(response.data.got)
@@ -89,6 +43,44 @@ const handleSignIn=(event:React.FormEvent)=> {
       setss("Issue with server\n"+error.response.status)
       else
       setss("User not found.")
+    }
+    else
+    // Handle any errors
+    setss("Issue with server\n"+error)
+    console.error(error);
+  });
+}
+const createUser=(event:React.FormEvent)=> {
+  event.preventDefault();
+  
+  const uname = document.getElementById('nuusername') as HTMLInputElement;
+  const pwd = document.getElementById('nupassword') as HTMLInputElement;
+  axios.request({
+    method: "post",
+    url: `https://listallfrompscale.vercel.app/api/create`,
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    data: {uid: uname.value, pswd: pwd.value}
+   
+  })
+  .then(response => 
+    {
+      if(response.data.SUCCESS)
+        {
+          setss("User created successfully.");
+          setcreateuser(false)
+        }
+      else
+        setss("Failed to create user.")
+      // console.log(response.json());
+      
+      console.log(response)
+    })
+  .catch(error => {
+    if (error.response) {
+      if(error.response.status==400)
+      setss("Issue with server\n"+error.response.status)
+      else
+      setss("Failed to create user.")
     }
     else
     // Handle any errors
@@ -163,6 +155,17 @@ const handleSignIn=(event:React.FormEvent)=> {
       <input id="username" name="username" placeholder="Username" className='h-12 p-2 rounded-md text-black'/>
       <input type="password" id="password" name="password" placeholder="Password" className='h-12 p-2 rounded-md text-black' />
       <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={handleSignIn}>Login</button>
+    </form>
+    <p>{ss}</p>
+    <button type="button" className='p-2 h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={()=>setcreateuser(true)}>createuser</button>
+  </div>
+) : null}
+{showcreateuser ? (
+  <div>
+    <form className='grid grid-flow-row gap-2'>
+      <input id="nuusername" name="username" placeholder="Username" className='h-12 p-2 rounded-md text-black'/>
+      <input type="password" id="nupassword" name="password" placeholder="Password" className='h-12 p-2 rounded-md text-black' />
+      <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={createUser}>Create User</button>
     </form>
     <p>{ss}</p>
   </div>
