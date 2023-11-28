@@ -1,6 +1,80 @@
+"use client"
 import Image from 'next/image'
+import React, { useEffect } from 'react';
+import axios from "axios";
+const handleSignIn=(event:React.FormEvent)=> {
+  event.preventDefault();
+  
+  const uname = document.getElementById('username') as HTMLInputElement;
+  const pwd = document.getElementById('password') as HTMLInputElement;
+  
+  const formData = new FormData();
+  formData.append('uid', uname.value);
+  formData.append('pswd', pwd.value);
+  // var xhr = new XMLHttpRequest();
 
+  // // Progress event listener
+  // xhr.upload.addEventListener("progress", function(event) {
+  //   if (event.lengthComputable) {
+  //     var percentComplete = (event.loaded / event.total) * 100;
+  //     console.log("Upload progress: " + percentComplete.toFixed(2) + "%");
+  //   }
+  // });
+
+  // // Upload completed event listener
+  // xhr.addEventListener("load", function() {
+  //   console.log("Upload completed");
+  // });
+
+  // // Upload failed event listener
+  // xhr.addEventListener("error", function() {
+  //   console.error("Upload failed");
+  // });
+
+  // // Set up the request
+
+  // // Set the Content-Type header
+  // xhr.open("POST", `http://${ipaddress}/api/upload`);
+  // xhr.setRequestHeader("Content-Type", "multipart/form-data");
+  // // xhr.setRequestHeader("Access-Control-Allow-Headers", "origin, content-type");
+  // // xhr.setRequestHeader("Access-Control-Allow-Credentials", "true");
+  // // xhr.setRequestHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+  // // xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+  // xhr.send(file);
+  axios.request({
+    method: "post",
+    url: `https://listallfrompscale.vercel.app/api/login`,
+    data: formData,
+    // onUploadProgress: (progressEvent) => {
+    //   progressEvent.total
+    //   const percentCompleted = Math.round(
+    //     (progressEvent.loaded * 100) / progressEvent.total!
+    //   );
+    //   console.log(percentCompleted);
+    //   // Update your progress UI here
+    // },
+  })
+  // .then((response) => {
+  //   console.log(response.data);
+  //   // Handle the response here
+  // });
+  // fetch(`http://${ipaddress}/api/upload`, {
+  //   method: 'POST',
+  //   body: formData
+  // })
+  .then(response => 
+    {
+      // console.log(response.json());
+      
+      console.log(response)
+    })
+  .catch(error => {
+    // Handle any errors
+    console.error(error);
+  });
+}
 export default function Home() {
+  const [ss, setss] = React.useState("")
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
@@ -28,15 +102,12 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div >
+        <form className='grid grid-flow-row gap-2'>
+            <input id="username" name="username" placeholder="Username" className='h-12 p-2 rounded-md text-black'/>
+            <input type="password" id="password" name="password" placeholder="Password" className='h-12 p-2 rounded-md text-black' />
+            <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={handleSignIn}>Login</button>
+        </form>
       </div>
 
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
