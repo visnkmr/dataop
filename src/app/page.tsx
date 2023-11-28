@@ -8,14 +8,6 @@ const handleSignIn=(event:React.FormEvent)=> {
   const uname = document.getElementById('username') as HTMLInputElement;
   const pwd = document.getElementById('password') as HTMLInputElement;
   
-  const formData = new FormData();
-  formData.append('uid', uname.value);
-  formData.append('pswd', pwd.value);
-  console.log(formData)
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-};
   // var xhr = new XMLHttpRequest();
 
   // // Progress event listener
@@ -48,9 +40,10 @@ const handleSignIn=(event:React.FormEvent)=> {
   // xhr.send(file);
   axios.request({
     method: "post",
-    headers:headers,
+    // headers:headers,
     url: `https://listallfrompscale.vercel.app/api/login`,
-    data: formData,
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    data: {uid: uname.value, pswd: pwd.value}
     // onUploadProgress: (progressEvent) => {
     //   progressEvent.total
     //   const percentCompleted = Math.round(
@@ -79,8 +72,44 @@ const handleSignIn=(event:React.FormEvent)=> {
     console.error(error);
   });
 }
+
 export default function Home() {
   const [ss, setss] = React.useState("")
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+};
+  // axios.request({
+  //   method: "post",
+  //   // headers:headers,
+  //   url: `https://listallfrompscale.vercel.app/api/listall`,
+  //   // onUploadProgress: (progressEvent) => {
+  //   //   progressEvent.total
+  //   //   const percentCompleted = Math.round(
+  //   //     (progressEvent.loaded * 100) / progressEvent.total!
+  //   //   );
+  //   //   console.log(percentCompleted);
+  //   //   // Update your progress UI here
+  //   // },
+  // })
+  // // .then((response) => {
+  // //   console.log(response.data);
+  // //   // Handle the response here
+  // // });
+  // // fetch(`http://${ipaddress}/api/upload`, {
+  // //   method: 'POST',
+  // //   body: formData
+  // // })
+  // .then(response => 
+  //   {
+  //     // console.log(response.json());
+      
+  //     console.log(response)
+  //   })
+  // .catch(error => {
+  //   // Handle any errors
+  //   console.error(error);
+  // });
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
