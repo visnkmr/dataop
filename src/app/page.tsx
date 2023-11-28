@@ -7,6 +7,7 @@ import axios from "axios";
 export default function Home() {
   const [ss, setss] = React.useState("")
   const [showall, setsa] = React.useState(false)
+  const [username, setuname] = React.useState("")
   const [showcreateuser, setcreateuser] = React.useState(false)
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -29,10 +30,49 @@ const handleSignIn=(event:React.FormEvent)=> {
       if(response.data.got)
         {
           setss("Login Successfull");
+          setuname(uname.value)
           setsa(true)
         }
       else
         setss("Invalid Login. Create account first.")
+      // console.log(response.json());
+      
+      console.log(response)
+    })
+  .catch(error => {
+    if (error.response) {
+      if(error.response.status==400)
+      setss("Issue with server\n"+error.response.status)
+      else
+      setss("User not found.")
+    }
+    else
+    // Handle any errors
+    setss("Issue with server\n"+error)
+    console.error(error);
+  });
+};
+const addToDb=(event:React.FormEvent)=> {
+  event.preventDefault();
+  
+  const url = document.getElementById('url') as HTMLInputElement;
+  axios.request({
+    method: "post",
+    url: `https://listallfrompscale.vercel.app/api/update`,
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    data: {uid: username, datatoadd: url.value}
+   
+  })
+  .then(response => 
+    {
+      if(response.data.got)
+        {
+          setss("Added URL successfully.");
+          // setuname(uname.value)
+          // setsa(true)
+        }
+      else
+        setss("Failed to add.")
       // console.log(response.json());
       
       console.log(response)
@@ -128,7 +168,7 @@ const createUser=(event:React.FormEvent)=> {
           <code className="font-mono font-bold">src/app/page.tsx</code>
         </p>
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-        <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={()=>setsa(false)}>logout</button>
+        <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={()=>{setsa(false); setuname("");}}>logout</button>
           <a
             className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
             href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
@@ -171,7 +211,14 @@ const createUser=(event:React.FormEvent)=> {
   </div>
 ) : null}
 
-
+{showall?(
+<>
+<form className='grid grid-flow-row gap-2'>
+      <input id="url" name="url" placeholder="enter url here" className='h-12 p-2 rounded-md text-black'/>
+      <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={addToDb}>Add to db</button>
+    </form>
+</>
+  ):null}
       {showall?(
       <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         <a
