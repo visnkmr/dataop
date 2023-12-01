@@ -6,6 +6,14 @@ import axios from "axios";
 
 export default function Home() {
   const [ss, setss] = React.useState("")
+  const [contents, setcontents] = React.useState(
+  //   [{
+  //   sessionname:"",
+  //   browsername:"",
+  //   tablist:[]
+  // }]
+  ""
+  )
   const [showall, setsa] = React.useState(false)
   const [username, setuname] = React.useState("")
   const [showcreateuser, setcreateuser] = React.useState(false)
@@ -68,6 +76,65 @@ const addToDb=(event:React.FormEvent)=> {
       if(response.data.got)
         {
           setss("Added URL successfully.");
+          // setuname(uname.value)
+          // setsa(true)
+        }
+      else
+        setss("Failed to add.")
+      // console.log(response.json());
+      
+      console.log(response)
+    })
+  .catch(error => {
+    if (error.response) {
+      if(error.response.status==400)
+      setss("Issue with server\n"+error.response.status)
+      else
+      setss("User not found.")
+    }
+    else
+    // Handle any errors
+    setss("Issue with server\n"+error)
+    console.error(error);
+  });
+}
+const refresh=()=> {
+  
+  axios.request({
+    method: "post",
+    url: `https://listallfrompscale.vercel.app/api/user/${username}`
+   
+  })
+  .then(response => 
+    {
+      if(response.data)
+        {
+          setss("List updated.");
+          let data=response.data
+          let tcon=""
+          let ddata=JSON.parse(data.data)
+          console.log(typeof(ddata))
+          ddata.forEach(item => {
+            console.log(typeof(item))
+            let titem=JSON.parse(item);
+            console.log(titem)
+            tcon+=(titem.sessionname)
+            tcon+="\n"
+            // tcon+=(titem.tablist)
+            for(var tinfo in titem.tablist){
+              // let tinfoeach=JSON.parse(tinfo)
+              console.log(typeof(tinfo))
+              tcon+=((titem.tablist[tinfo].title))
+              tcon+="\n"
+              tcon+=((titem.tablist[tinfo].url))
+              tcon+="\n"
+
+            }
+            tcon+="\n"
+            // Do something with each item in the array
+          });
+          setcontents(tcon)
+          // setcontents((response.data))
           // setuname(uname.value)
           // setsa(true)
         }
@@ -211,12 +278,21 @@ const createUser=(event:React.FormEvent)=> {
   </div>
 ) : null}
 
-{showall?(
+{/* {showall?(
 <>
 <form className='grid grid-flow-row gap-2'>
       <input id="url" name="url" placeholder="enter url here" className='h-12 p-2 rounded-md text-black'/>
       <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={addToDb}>Add to db</button>
     </form>
+</>
+  ):null} */}
+  
+  
+  {showall?(
+<>
+      <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={refresh}>Refresh</button>
+      <p>{JSON.stringify(contents)}</p>
+
 </>
   ):null}
       {showall?(
