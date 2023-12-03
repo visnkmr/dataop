@@ -2,22 +2,25 @@
 import Image from 'next/image'
 import React, { useEffect } from 'react';
 import axios from "axios";
+import {listsessions} from '@/components/listsessions';
 
 
 export default function Home() {
+  
   const [ss, setss] = React.useState("")
   const [contents, setcontents] = React.useState(
-  //   [{
-  //   sessionname:"",
-  //   browsername:"",
-  //   tablist:[]
-  // }]
-[]
-  )
-  const [showall, setsa] = React.useState(true)
-  const [showdivname,setshowdivname] = React.useState("")
-  const [username, setuname] = React.useState("try")
-  const [showcreateuser, setcreateuser] = React.useState(false)
+    //   [{
+      //   sessionname:"",
+      //   browsername:"",
+      //   tablist:[]
+      // }]
+      []
+      )
+      const [showall, setsa] = React.useState(true)
+      const [showdivname,setshowdivname] = React.useState("")
+      const [username, setuname] = React.useState("try")
+      const [showcreateuser, setcreateuser] = React.useState(false)
+      var data=listsessions(username);
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
@@ -46,7 +49,7 @@ const handleSignIn=(event:React.FormEvent)=> {
         setss("Invalid Login. Create account first.")
       // console.log(response.json());
       
-      console.log(response)
+      // console.log(response)
     })
   .catch(error => {
     if (error.response) {
@@ -99,19 +102,19 @@ const addToDb=(event:React.FormEvent)=> {
     console.error(error);
   });
 }
-const refresh=()=> {
+// const refresh=()=> {
   // var data:object;
-  axios.request({
-    method: "post",
-    url: `https://listallfrompscale.vercel.app/api/user/${username}`
+  // axios.request({
+  //   method: "post",
+  //   url: `https://listallfrompscale.vercel.app/api/user/${username}`
    
-  })
-  .then(response => 
-    {
-      if(response.data)
-        {
+  // })
+  // .then(response => 
+  //   {
+      // if(response.data)
+      //   {
           setss("List updated.");
-          var data=response.data
+          // var data=listsessions(username);
           console.log(typeof(data))
           // setcontents((response.data))
           // setuname(uname.value)
@@ -131,7 +134,7 @@ const refresh=()=> {
             // var children;
             for(var tinfo in titem.tablist){  
               // let tinfoeach=JSON.parse(tinfo)
-              console.log(typeof(tinfo))
+              // console.log(typeof(tinfo))
               children.push(
               <>
               <tr>
@@ -172,28 +175,28 @@ const refresh=()=> {
             </div>
             </>);
           setcontents(tcon)
-        }
-      else
-        setss("Failed to add.")
+      //   }
+      // else
+      //   setss("Failed to add.")
       // console.log(response.json());
       
-      console.log(response)
-    })
-  .catch(error => {
-    if (error.response) {
-      if(error.response.status==400)
-      setss("Issue with server\n"+error.response.status)
-      else
-      setss("User not found.")
-    }
-    else
-    // Handle any errors
-    setss("Issue with server\n"+error)
-    console.error(error);
-  });
+      // console.log(response)
+  //   })
+  // .catch(error => {
+  //   if (error.response) {
+  //     if(error.response.status==400)
+  //     setss("Issue with server\n"+error.response.status)
+  //     else
+  //     setss("User not found.")
+  //   }
+  //   else
+  //   // Handle any errors
+  //   setss("Issue with server\n"+error)
+  //   console.error(error);
+  // });
 
   
-}
+// }
 const createUser=(event:React.FormEvent)=> {
   event.preventDefault();
   
