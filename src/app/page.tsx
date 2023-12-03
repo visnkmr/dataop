@@ -12,10 +12,11 @@ export default function Home() {
   //   browsername:"",
   //   tablist:[]
   // }]
-
+[]
   )
-  const [showall, setsa] = React.useState(false)
-  const [username, setuname] = React.useState("")
+  const [showall, setsa] = React.useState(true)
+  const [showdivname,setshowdivname] = React.useState("")
+  const [username, setuname] = React.useState("try")
   const [showcreateuser, setcreateuser] = React.useState(false)
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -116,11 +117,14 @@ const refresh=()=> {
           // setuname(uname.value)
           // setsa(true)
 
-          let tcon;
-          let children=[];
+          let tcon=[];
+          let topbar=[];
+          // let children;
+          let persl=[];
           let ddata=JSON.parse(data.data)
           console.log(typeof(ddata))
           ddata.forEach(item => {
+            let children=[];
             console.log(typeof(item))
             let titem=JSON.parse(item);
             console.log(titem)
@@ -131,29 +135,17 @@ const refresh=()=> {
               children.push(
               <>
               <tr>
-                
-              <td className='inline-block overflow-hidden'><a href={titem.tablist[tinfo].url}>{titem.tablist[tinfo].title}</a></td>
+              {/* <td className='text-clip overflow-hidden'>{titem.tablist[tinfo].url}</td>   */}
+              <td><a href={titem.tablist[tinfo].url}>{titem.tablist[tinfo].title}</a></td>
               </tr>
               </>
               );
 
             }
+            persl.push(<div className={showdivname==titem.sessionname ? `display-block` : 'hidden'}>{children}</div>)
+
+            topbar.push(<button onClick={()=>{setshowdivname(titem.sessionname);console.log(showdivname)}}>{titem.sessionname}_{titem.browsername}_{titem.tablist.length}</button>);
             
-            tcon= (<>
-            <div  className='inline-block overflow-hidden'>
-
-            <table>
-              <th>
-
-              <td>{titem.sessionname}</td>
-              </th>
-              {/* <tr> */}
-              {/* <td>test</td> */}
-              {/* </tr> */}
-              {children}
-            </table>
-            </div>
-            </>);
             // tcon.props.children.props.children.push(rows);
             // tcon+=(titem.sessionname)
             // tcon+="\n"
@@ -162,6 +154,23 @@ const refresh=()=> {
             // tcon+="\n"
             // Do something with each item in the array
           });
+          tcon.push(<>
+              
+            <div >
+            {topbar}
+            <br/>
+            <table className='border-spacing-0 border-gray-100'>
+              {/* <th>
+
+              <td>{titem.sessionname}_{titem.browsername}_{titem.tablist.length}</td>
+              </th> */}
+              {/* <tr> */}
+              {/* <td>test</td> */}
+              {/* </tr> */}
+              {persl}
+            </table>
+            </div>
+            </>);
           setcontents(tcon)
         }
       else
