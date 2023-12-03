@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React, { useEffect } from 'react';
 import axios from "axios";
-import {listsessions} from '@/components/listsessions';
+import {ListSessions} from '@/components/listsessions';
 
 
 export default function Home() {
@@ -20,7 +20,7 @@ export default function Home() {
       const [showdivname,setshowdivname] = React.useState("")
       const [username, setuname] = React.useState("try")
       const [showcreateuser, setcreateuser] = React.useState(false)
-      var data=listsessions(username);
+      var data=ListSessions(username);
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'

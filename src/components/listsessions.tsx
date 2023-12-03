@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export const listsessions=(username:string)=>{
+export const ListSessions=(username:string)=>{
   let { data } = 
   useQuery(
     { 
