@@ -12,7 +12,7 @@ export default function Home() {
   //   browsername:"",
   //   tablist:[]
   // }]
-  ""
+
   )
   const [showall, setsa] = React.useState(false)
   const [username, setuname] = React.useState("")
@@ -99,7 +99,7 @@ const addToDb=(event:React.FormEvent)=> {
   });
 }
 const refresh=()=> {
-  
+  // var data:object;
   axios.request({
     method: "post",
     url: `https://listallfrompscale.vercel.app/api/user/${username}`
@@ -110,33 +110,59 @@ const refresh=()=> {
       if(response.data)
         {
           setss("List updated.");
-          let data=response.data
-          let tcon=""
+          var data=response.data
+          console.log(typeof(data))
+          // setcontents((response.data))
+          // setuname(uname.value)
+          // setsa(true)
+
+          let tcon;
+          let children=[];
           let ddata=JSON.parse(data.data)
           console.log(typeof(ddata))
           ddata.forEach(item => {
             console.log(typeof(item))
             let titem=JSON.parse(item);
             console.log(titem)
-            tcon+=(titem.sessionname)
-            tcon+="\n"
-            // tcon+=(titem.tablist)
-            for(var tinfo in titem.tablist){
+            // var children;
+            for(var tinfo in titem.tablist){  
               // let tinfoeach=JSON.parse(tinfo)
               console.log(typeof(tinfo))
-              tcon+=((titem.tablist[tinfo].title))
-              tcon+="\n"
-              tcon+=((titem.tablist[tinfo].url))
-              tcon+="\n"
+              children.push(
+              <>
+              <tr>
+                
+              <td className='inline-block overflow-hidden'><a href={titem.tablist[tinfo].url}>{titem.tablist[tinfo].title}</a></td>
+              </tr>
+              </>
+              );
 
             }
-            tcon+="\n"
+            
+            tcon= (<>
+            <div  className='inline-block overflow-hidden'>
+
+            <table>
+              <th>
+
+              <td>{titem.sessionname}</td>
+              </th>
+              {/* <tr> */}
+              {/* <td>test</td> */}
+              {/* </tr> */}
+              {children}
+            </table>
+            </div>
+            </>);
+            // tcon.props.children.props.children.push(rows);
+            // tcon+=(titem.sessionname)
+            // tcon+="\n"
+            // tcon+=(titem.tablist)
+            
+            // tcon+="\n"
             // Do something with each item in the array
           });
           setcontents(tcon)
-          // setcontents((response.data))
-          // setuname(uname.value)
-          // setsa(true)
         }
       else
         setss("Failed to add.")
@@ -156,6 +182,8 @@ const refresh=()=> {
     setss("Issue with server\n"+error)
     console.error(error);
   });
+
+  
 }
 const createUser=(event:React.FormEvent)=> {
   event.preventDefault();
@@ -291,7 +319,7 @@ const createUser=(event:React.FormEvent)=> {
   {showall?(
 <>
       <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={refresh}>Refresh</button>
-      <p>{JSON.stringify(contents)}</p>
+      <p>{(contents)}</p>
 
 </>
   ):null}
