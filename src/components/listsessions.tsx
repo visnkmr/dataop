@@ -3,18 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export const ListSessions=(username:string)=>{
-  let { data } = 
-  useQuery(
+  return useQuery(
     { 
-      queryKey:[`https://listallfrompscale.vercel.app/api/user/${username}`],
+      queryKey:[`${username}`],
       queryFn: async()=>{
     const response = await axios.post(`https://listallfrompscale.vercel.app/api/user/${username}`)
-    console.log(response.data)
+    // console.log(response.data)
       return await response.data
-  } })
-if(!data){
-  data=[]
-}
-  return data;
+  } });
 
 };
