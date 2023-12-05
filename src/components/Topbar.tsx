@@ -23,19 +23,30 @@ export default function Topbar({username}){
           
           return (
           <>
+          
+          <section className="flex flex-row w-full overflow-x-scroll space-x-4 p-4 scrollbar-hide items-start">
            {
            sessionlist.map((slist) => {
            return (
-           <button onClick={()=>{setshowdivname(slist.sname);console.log(showdivname)}}>{slist.sname}_{slist.bname}_{slist.slength}</button>
+            <>
+            
+        <div className="flex flex-col items-center border rounded-lg p-4">
+            <button onClick={()=>{setshowdivname(slist.sname);console.log(showdivname)}}><h3 className="font-semibold text-lg">{slist.sname}_{slist.bname}_{slist.slength}</h3></button>
+          </div>
+          <div className="flex flex-col items-center border rounded-lg p-4">
+            <button onClick={()=>{setshowdivname(slist.sname);console.log(showdivname)}}><h3 className="font-semibold text-lg">{slist.sname}_{slist.bname}_{slist.slength}</h3></button>
+          </div>
+            </>
            );
            })
            }
+           </section>
           {ddata.map((item) => {
             let titem=JSON.parse(item);
 
             return (
                 <>
-                <table className='border-spacing-0 border-gray-100'>
+                {/* <table className='border-spacing-0 border-gray-100'> */}
                 <div 
                 className={showdivname==titem.sessionname ? `display-block` : 'hidden'}
                 >
@@ -43,15 +54,19 @@ export default function Topbar({username}){
                 titem.tablist.map((etab) => {
                 return (
                     <>
-                    <tr>
+                    {/* <tr> */}
                     {/* <td className='text-clip overflow-hidden'>{titem.tablist[tinfo].url}</td>   */}
-                    <td><a href={etab.url}>{etab.title}</a></td>
-                    </tr>
+                    {/* <td> */}
+                        <p>
+                            <a href={etab.url}>{etab.title}</a>
+                        </p>
+                        {/* </td> */}
+                    {/* </tr> */}
                     </>
                 );
                 })}
                 </div>
-                </table>
+                {/* </table> */}
                 </>
                 );
             })}
