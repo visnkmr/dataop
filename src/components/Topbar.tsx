@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ListSessions } from "./listsessions";
 import classnames from "classnames";
-import Fuse from "fuse.js"
+import Fuse, { FuseResult } from "fuse.js"
 interface etab {
     title:string,
     url:string
@@ -26,7 +26,7 @@ export default function Topbar({username}){
       };
       var completetabs:Array<etab>=[];
       console.log(completetabs)
-      
+      var popresults:FuseResult<etab>[]=[];
       
       
     if(!isLoading && !isError){
@@ -46,6 +46,7 @@ export default function Topbar({username}){
           });
           const fuse = new Fuse(completetabs, options);
             const result = fuse.search(stext);
+            popresults=result;
             console.log("fuse------------>"   +JSON.stringify(result))
           
           return (
@@ -62,6 +63,22 @@ export default function Topbar({username}){
           }
           className='max-w-sm'
         />
+        {
+               popresults.map((eitem) => {
+                let etab=eitem.item;
+                return (
+                    <>
+                    {/* <tr> */}
+                    {/* <td className='text-clip overflow-hidden'>{titem.tablist[tinfo].url}</td>   */}
+                    {/* <td> */}
+                        <p>
+                            <a href={etab.url}>{etab.title}</a>
+                        </p>
+                        {/* </td> */}
+                    {/* </tr> */}
+                    </>
+                );
+                })}
           <section className="flex flex-row overflow-x-scroll space-x-4 p-4 scrollbar-hide items-start">
             <p>
                 Open all tabs
