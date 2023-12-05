@@ -1,6 +1,6 @@
 import React from "react";
 import { ListSessions } from "./listsessions";
-
+import classnames from "classnames"
 
 export default function Topbar({username}){
     var {isLoading,isError,data}=ListSessions(username);
@@ -23,7 +23,13 @@ export default function Topbar({username}){
           
           return (
           <>
-          
+          <section className="flex flex-row overflow-x-scroll space-x-4 p-4 scrollbar-hide items-start">
+            <p>
+                Open all tabs
+            </p><p>
+                Delete session
+            </p>
+           </section>
           <section className="flex flex-row w-full overflow-x-scroll space-x-4 p-4 scrollbar-hide items-start">
            {
            sessionlist.map((slist) => {
@@ -33,14 +39,15 @@ export default function Topbar({username}){
         <div className="flex flex-col items-center border rounded-lg p-4">
             <button onClick={()=>{setshowdivname(slist.sname);console.log(showdivname)}}><h3 className="font-semibold text-lg">{slist.sname}_{slist.bname}_{slist.slength}</h3></button>
           </div>
-          <div className="flex flex-col items-center border rounded-lg p-4">
+          {/* <div className="flex flex-col items-center border rounded-lg p-4">
             <button onClick={()=>{setshowdivname(slist.sname);console.log(showdivname)}}><h3 className="font-semibold text-lg">{slist.sname}_{slist.bname}_{slist.slength}</h3></button>
-          </div>
+          </div> */}
             </>
            );
            })
            }
            </section>
+           
           {ddata.map((item) => {
             let titem=JSON.parse(item);
 
@@ -48,7 +55,7 @@ export default function Topbar({username}){
                 <>
                 {/* <table className='border-spacing-0 border-gray-100'> */}
                 <div 
-                className={showdivname==titem.sessionname ? `display-block` : 'hidden'}
+                className={classnames(showdivname==titem.sessionname ? `display-block` : 'hidden',"")}
                 >
                 {
                 titem.tablist.map((etab) => {
