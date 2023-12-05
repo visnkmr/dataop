@@ -1,18 +1,42 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ListSessions } from "./listsessions";
-import classnames from "classnames"
-
+import classnames from "classnames";
+import Fuse from "fuse.js"
+interface etab {
+    title:string,
+    url:string
+};
+interface items{
+    sessionname:string,
+    browsername:string,
+    tablist:Array<etab>
+}
 export default function Topbar({username}){
     var {isLoading,isError,data}=ListSessions(username);
-    const [showdivname,setshowdivname] = React.useState("")
+    const [showdivname,setshowdivname] = React.useState("");
+    const [stext,setstext] = React.useState("")
     let sessionlist=[];
+    
+    const options = {
+        threshold: 0.15,
+        ignoreLocation: true,
+        findAllMatches: true,
+        includeScore: false,
+        keys: ['title','url']
+      };
+      var completetabs:Array<etab>=[];
+      console.log(completetabs)
+      
+      
+      
     if(!isLoading && !isError){
-
         let ddata=JSON.parse((data.data))
         // let dddata=JSON.parse(ddata);
         //   console.log(typeof(ddata)) 
         ddata.map((eitem)=>{
-            let item=JSON.parse(eitem);
+            let item:items=JSON.parse(eitem);
+            // console.log(item.tablist)
+            completetabs=completetabs.concat(item.tablist)
             // console.log("tdata---------->"+(item.sessionname))
                 sessionlist.push({
                     sname:item.sessionname,
@@ -20,9 +44,24 @@ export default function Topbar({username}){
                     slength:item.tablist.length
                 });
           });
+          const fuse = new Fuse(completetabs, options);
+            const result = fuse.search(stext);
+            console.log("fuse------------>"   +JSON.stringify(result))
           
           return (
           <>
+           <input
+          placeholder='Search in commit message for...'
+          onChange={(event) =>
+            {
+              setstext(event.target.value)
+              console.log(event.target.value)
+             
+              // || table.getColumn('reponame')?.setFilterValue(event.target.value)
+            }
+          }
+          className='max-w-sm'
+        />
           <section className="flex flex-row overflow-x-scroll space-x-4 p-4 scrollbar-hide items-start">
             <p>
                 Open all tabs
