@@ -29,6 +29,14 @@ export default function Topbar({username}){
       var popresults:FuseResult<etab>[]=[];
       
       
+  type tes=[
+    {
+      sessionname:string,
+      browsername:string,
+      tablist:Array<etab>
+
+    }
+  ];
     if(!isLoading && !isError){
         let ddata=JSON.parse((data.data))
         // let dddata=JSON.parse(ddata);
@@ -44,10 +52,10 @@ export default function Topbar({username}){
                     slength:item.tablist.length
                 });
           });
-          const fuse = new Fuse(completetabs, options);
-            const result = fuse.search(stext);
-            popresults=result;
-            console.log("fuse------------>"   +JSON.stringify(result))
+          // const fuse = new Fuse(completetabs, options);
+          //   const result = fuse.search(stext);
+          //   popresults=result;
+          //   console.log("fuse------------>"   +JSON.stringify(result))
           
           return (
           <>
@@ -66,6 +74,7 @@ export default function Topbar({username}){
         {
                popresults.map((eitem) => {
                 let etab=eitem.item;
+                if(false)
                 return (
                     <>
                     {/* <tr> */}
@@ -106,7 +115,10 @@ export default function Topbar({username}){
            
           {ddata.map((item) => {
             let titem=JSON.parse(item);
-
+            const fuse = new Fuse(titem.tablist, options);
+            const result = stext?fuse.search(stext):titem.tablist;
+            // popresults=result;
+            console.log("fuse------------>"   +JSON.stringify(result))
             return (
                 <>
                 {/* <table className='border-spacing-0 border-gray-100'> */}
@@ -114,7 +126,10 @@ export default function Topbar({username}){
                 className={classnames(showdivname==titem.sessionname ? `display-block` : 'hidden',"")}
                 >
                 {
-                titem.tablist.map((etab) => {
+                  
+                result.map((et) => {
+                  let etab:etab=stext?et.item as etab:et;
+                  if(etab.url.includes(stext))
                 return (
                     <>
                     {/* <tr> */}
