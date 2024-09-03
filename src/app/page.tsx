@@ -6,14 +6,19 @@ import axios from "axios";
 const ListLinks = dynamic(() => import('../components/listlinks'), {
   ssr: false,
 });
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 import dynamic from 'next/dynamic';
+import LoginButton from '@/components/loginbutton';
 
 export default function Home() {
-  
+   const { user, error, isLoading } = useUser();
+
+  console.log(user)
+  const showall=user?.name!==null;
   const [ss, setss] = React.useState("")
   
-      const [showall, setsa] = React.useState(true)
+      // const [showall, setsa] = React.useState(true)
       const [username, setuname] = React.useState("try")
       const [showcreateuser, setcreateuser] = React.useState(false)
       
@@ -21,45 +26,45 @@ export default function Home() {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
 };
-const handleSignIn=(event:React.FormEvent)=> {
-  event.preventDefault();
+// const handleSignIn=(event:React.FormEvent)=> {
+//   event.preventDefault();
   
-  const uname = document.getElementById('username') as HTMLInputElement;
-  const pwd = document.getElementById('password') as HTMLInputElement;
-  axios.request({
-    method: "post",
-    url: `https://listallfrompscale.vercel.app/api/login`,
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    data: {uid: uname.value, pswd: pwd.value}
+//   const uname = document.getElementById('username') as HTMLInputElement;
+//   const pwd = document.getElementById('password') as HTMLInputElement;
+//   axios.request({
+//     method: "post",
+//     url: `https://listallfrompscale.vercel.app/api/login`,
+//     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+//     data: {uid: uname.value, pswd: pwd.value}
    
-  })
-  .then(response => 
-    {
-      if(response.data.got)
-        {
-          setss("Login Successfull");
-          setuname(uname.value)
-          setsa(true)
-        }
-      else
-        setss("Invalid Login. Create account first.")
-      // console.log(response.json());
+//   })
+//   .then(response => 
+//     {
+//       if(response.data.got)
+//         {
+//           setss("Login Successfull");
+//           setuname(uname.value)
+//           setsa(true)
+//         }
+//       else
+//         setss("Invalid Login. Create account first.")
+//       // console.log(response.json());
       
-      // console.log(response)
-    })
-  .catch(error => {
-    if (error.response) {
-      if(error.response.status==400)
-      setss("Issue with server\n"+error.response.status)
-      else
-      setss("User not found.")
-    }
-    else
-    // Handle any errors
-    setss("Issue with server\n"+error)
-    console.error(error);
-  });
-};
+//       // console.log(response)
+//     })
+//   .catch(error => {
+//     if (error.response) {
+//       if(error.response.status==400)
+//       setss("Issue with server\n"+error.response.status)
+//       else
+//       setss("User not found.")
+//     }
+//     else
+//     // Handle any errors
+//     setss("Issue with server\n"+error)
+//     console.error(error);
+//   });
+// };
 const addToDb=(event:React.FormEvent)=> {
   event.preventDefault();
   
@@ -174,12 +179,12 @@ const createUser=(event:React.FormEvent)=> {
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
         <p>{ss}</p>
-        <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={()=>{setsa(false); setuname("");}}>logout</button>
+        {/* <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={()=>{setsa(false); setuname("");}}>logout</button> */}
           
         </div>
       </div>
 ) : null}
-      {!showall ? (
+      {/* {!showall ? (
   <div>
     <form className='grid grid-flow-row gap-2'>
       <input id="username" name="username" placeholder="Username" className='h-12 p-2 rounded-md text-black'/>
@@ -198,7 +203,8 @@ const createUser=(event:React.FormEvent)=> {
       <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={createUser}>Create User</button>
     </form>
   </div>
-) : null}
+) : null} */}
+<LoginButton/>
 
 {/* {showall?(
 <>
