@@ -9,7 +9,7 @@ const ListLinks = dynamic(() => import('../components/listlinks'), {
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 import dynamic from 'next/dynamic';
-import LoginButton from '../components/loginbutton';
+import LoginButton from '@/components/loginbutton';
 
 export default function Home() {
    const { user, error, isLoading } = useUser();
