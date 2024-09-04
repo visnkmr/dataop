@@ -16,6 +16,7 @@ export default function Home() {
 
   console.log(user)
   const showall=user?.name!==null;
+  console.log(showall)
   const [ss, setss] = React.useState("")
   
       // const [showall, setsa] = React.useState(true)
@@ -204,7 +205,7 @@ const createUser=(event:React.FormEvent)=> {
     </form>
   </div>
 ) : null} */}
-<LoginButton/>
+{!showall ? (<LoginButton/>):null}
 
 {/* {showall?(
 <>
