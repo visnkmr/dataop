@@ -17,12 +17,16 @@ export default function Home() {
   console.log(user)
   const showall=user?.name!==null;
   console.log(showall)
-  const [ss, setss] = React.useState("")
   
+  const [ss, setss] = React.useState("")
+ 
       // const [showall, setsa] = React.useState(true)
       const [username, setuname] = React.useState("try")
       const [showcreateuser, setcreateuser] = React.useState(false)
-      
+      if(!showall){
+        setss("Logged In successfully.");
+        setuname(user?.sub!)
+      }
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
@@ -206,6 +210,7 @@ const createUser=(event:React.FormEvent)=> {
   </div>
 ) : null} */}
 {!showall ? (<LoginButton/>):null}
+{showall ? (<a href="/api/auth/logout">Logout</a>):null}
 
 {/* {showall?(
 <>
