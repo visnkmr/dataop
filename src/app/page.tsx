@@ -15,7 +15,7 @@ export default function Home() {
    const { user, error, isLoading } = useUser();
 
   console.log(user)
-  const showall=user?.name!==null;
+  const showall=!(!user); 
   console.log(showall)
   
   const [ss, setss] = React.useState("")
