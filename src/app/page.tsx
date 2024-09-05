@@ -15,7 +15,7 @@ export default function Home() {
    const { user, error, isLoading } = useUser();
 
   console.log(user)
-  const showall=!(!user); 
+  let showall=!user;
   console.log(showall)
   
   const [ss, setss] = React.useState("")
@@ -23,7 +23,7 @@ export default function Home() {
       // const [showall, setsa] = React.useState(true)
       const [username, setuname] = React.useState("try")
       const [showcreateuser, setcreateuser] = React.useState(false)
-      if(!showall){
+      if(user){
         setss("Logged In successfully.");
         setuname(user?.sub!)
       }
@@ -109,44 +109,44 @@ const addToDb=(event:React.FormEvent)=> {
   });
 }
 
-const createUser=(event:React.FormEvent)=> {
-  event.preventDefault();
+// const createUser=(event:React.FormEvent)=> {
+//   event.preventDefault();
   
-  const uname = document.getElementById('nuusername') as HTMLInputElement;
-  const pwd = document.getElementById('nupassword') as HTMLInputElement;
-  axios.request({
-    method: "post",
-    url: `https://listallfrompscale.vercel.app/api/create`,
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    data: {uid: uname.value, pswd: pwd.value}
+//   const uname = document.getElementById('nuusername') as HTMLInputElement;
+//   const pwd = document.getElementById('nupassword') as HTMLInputElement;
+//   axios.request({
+//     method: "post",
+//     url: `https://listallfrompscale.vercel.app/api/create`,
+//     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+//     data: {uid: uname.value, pswd: pwd.value}
    
-  })
-  .then(response => 
-    {
-      if(response.data.SUCCESS)
-        {
-          setss("User created successfully.");
-          setcreateuser(false)
-        }
-      else
-        setss("Failed to create user.")
-      // console.log(response.json());
+//   })
+//   .then(response => 
+//     {
+//       if(response.data.SUCCESS)
+//         {
+//           setss("User created successfully.");
+//           setcreateuser(false)
+//         }
+//       else
+//         setss("Failed to create user.")
+//       // console.log(response.json());
       
-      console.log(response)
-    })
-  .catch(error => {
-    if (error.response) {
-      if(error.response.status==400)
-      setss("Issue with server\n"+error.response.status)
-      else
-      setss("Failed to create user.")
-    }
-    else
-    // Handle any errors
-    setss("Issue with server\n"+error)
-    console.error(error);
-  });
-}
+//       console.log(response)
+//     })
+//   .catch(error => {
+//     if (error.response) {
+//       if(error.response.status==400)
+//       setss("Issue with server\n"+error.response.status)
+//       else
+//       setss("Failed to create user.")
+//     }
+//     else
+//     // Handle any errors
+//     setss("Issue with server\n"+error)
+//     console.error(error);
+//   });
+// }
   // axios.request({
   //   method: "post",
   //   // headers:headers,
@@ -180,7 +180,7 @@ const createUser=(event:React.FormEvent)=> {
   // });
   return (
     <main className="flex flex-col items-center"> 
-      {showall ? (
+      {!showall ? (
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
         <p>{ss}</p>
@@ -209,20 +209,20 @@ const createUser=(event:React.FormEvent)=> {
     </form>
   </div>
 ) : null} */}
-{!showall ? (<LoginButton/>):null}
-{showall ? (<a href="/api/auth/logout">Logout</a>):null}
+{showall ? (<LoginButton/>):null}
+{!showall ? (<a href="/api/auth/logout">Logout</a>):null}
 
-{/* {showall?(
+ {!showall?(
 <>
 <form className='grid grid-flow-row gap-2'>
       <input id="url" name="url" placeholder="enter url here" className='h-12 p-2 rounded-md text-black'/>
       <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={addToDb}>Add to db</button>
     </form>
 </>
-  ):null} */}
+  ):null} 
   
   
-  {showall?(
+  {!showall?(
 <>
       
       <ListLinks username={username}/>
