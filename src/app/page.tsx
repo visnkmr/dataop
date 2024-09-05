@@ -21,12 +21,12 @@ export default function Home() {
   const [ss, setss] = React.useState("")
  
       // const [showall, setsa] = React.useState(true)
-      const [username, setuname] = React.useState("try")
-      const [showcreateuser, setcreateuser] = React.useState(false)
-      if(user){
-        setss("Logged In successfully.");
-        setuname(user?.sub!)
-      }
+      // const [username, setuname] = React.useState("try")
+      // const [showcreateuser, setcreateuser] = React.useState(false)
+      // if(user){
+      //   setss("Logged In successfully.");
+      //   setuname(user?.sub!)
+      // }
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
@@ -78,7 +78,7 @@ const addToDb=(event:React.FormEvent)=> {
     method: "post",
     url: `https://listallfrompscale.vercel.app/api/update`,
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    data: {uid: username, datatoadd: url.value}
+    data: {uid: user?.sub, datatoadd: url.value}
    
   })
   .then(response => 
@@ -225,7 +225,7 @@ const addToDb=(event:React.FormEvent)=> {
   {!showall?(
 <>
       
-      <ListLinks username={username}/>
+      <ListLinks username={user?.sub}/>
 
 </>
   ):null}
