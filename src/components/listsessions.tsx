@@ -7,7 +7,7 @@ export const ListSessions=(username:string)=>{
     { 
       queryKey:[`${username}`],
       queryFn: async()=>{
-    const response = await axios.post(`https://listallfrompscale.vercel.app/api/user/${username}`)
+    const response = await axios.post(`https://listallfrompscale-git-othernew-visnkmrs-projects.vercel.app/api/user/${username}`)
     // console.log(response.data)
       return await response.data
   } });
