@@ -2,20 +2,29 @@ import React, { useEffect } from "react";
 import { ListSessions } from "./listsessions";
 import classnames from "classnames";
 import Fuse, { FuseResult } from "fuse.js"
+
 interface etab {
     title:string,
     url:string
 };
+
 interface items{
     sessionname:string,
     browsername:string,
     tablist:Array<etab>
 }
-export default function Topbar({username}){
+
+interface SessionList {
+    sname: string;
+    bname: string;
+    slength: number;
+}
+
+export default function Topbar({username}: {username: string}){
     var {isLoading,isError,data}=ListSessions(username);
     const [showdivname,setshowdivname] = React.useState("");
     const [stext,setstext] = React.useState("")
-    let sessionlist=[];
+    let sessionlist: SessionList[] = [];
     
     const options = {
         threshold: 0.15,
@@ -24,143 +33,161 @@ export default function Topbar({username}){
         includeScore: false,
         keys: ['title','url']
       };
-      var completetabs:Array<etab>=[];
-      console.log(completetabs)
-      var popresults:FuseResult<etab>[]=[];
+      var completetabs: etab[] = [];
+      var popresults: FuseResult<etab>[] = [];
       
-      
-  type tes=[
-    {
-      sessionname:string,
-      browsername:string,
-      tablist:Array<etab>
-
+    if(isLoading){
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+        );
     }
-  ];
-    if(!isLoading && !isError){
-        let ddata=JSON.parse((data.data))
-        // let dddata=JSON.parse(ddata);
-        //   console.log(typeof(ddata)) 
-        ddata.map((eitem)=>{
-            let item:items=JSON.parse(eitem);
-            // console.log(item.tablist)
-            completetabs=completetabs.concat(item.tablist)
-            // console.log("tdata---------->"+(item.sessionname))
-                sessionlist.push({
-                    sname:item.sessionname,
-                    bname:item.browsername,
-                    slength:item.tablist.length
-                });
-          });
-          // const fuse = new Fuse(completetabs, options);
-          //   const result = fuse.search(stext);
-          //   popresults=result;
-          //   console.log("fuse------------>"   +JSON.stringify(result))
-          
-          return (
-          <>
-           <input
-          placeholder='Search in commit message for...'
-          onChange={(event) =>
-            {
-              setstext(event.target.value)
-              console.log(event.target.value)
-             
-              // || table.getColumn('reponame')?.setFilterValue(event.target.value)
-            }
-          }
-          className='max-w-sm'
-        />
-        {
-               popresults.map((eitem) => {
-                let etab=eitem.item;
-                if(false)
-                return (
-                    <>
-                    {/* <tr> */}
-                    {/* <td className='text-clip overflow-hidden'>{titem.tablist[tinfo].url}</td>   */}
-                    {/* <td> */}
-                        <p>
-                            <a href={etab.url}>{etab.title}</a>
-                        </p>
-                        {/* </td> */}
-                    {/* </tr> */}
-                    </>
-                );
-                })}
-          <section className="flex flex-row overflow-x-scroll space-x-4 p-4 scrollbar-hide items-start">
-            <p>
-                Open all tabs
-            </p><p>
-                Delete session
-            </p>
-           </section>
-          <section className="flex flex-row w-full overflow-x-scroll space-x-4 p-4 scrollbar-hide items-start">
-           {
-           sessionlist.map((slist) => {
-           return (
-            <>
-            
-        <div className="flex flex-col items-center border rounded-lg p-4">
-            <button onClick={()=>{setshowdivname(slist.sname);console.log(showdivname)}}><h3 className="font-semibold text-lg">{slist.sname}_{slist.bname}_{slist.slength}</h3></button>
-          </div>
-          {/* <div className="flex flex-col items-center border rounded-lg p-4">
-            <button onClick={()=>{setshowdivname(slist.sname);console.log(showdivname)}}><h3 className="font-semibold text-lg">{slist.sname}_{slist.bname}_{slist.slength}</h3></button>
-          </div> */}
-            </>
-           );
-           })
-           }
-           </section>
-           
-          {ddata.map((item) => {
-            let titem=JSON.parse(item);
-            const fuse = new Fuse(titem.tablist, options);
-            const result = stext?fuse.search(stext):titem.tablist;
-            // popresults=result;
-            console.log("fuse------------>"   +JSON.stringify(result))
-            return (
-                <>
-                {/* <table className='border-spacing-0 border-gray-100'> */}
-                <div 
-                className={classnames(showdivname==titem.sessionname ? `display-block` : 'hidden',"")}
-                >
-                {
-                  
-                result.map((et) => {
-                  let etab:etab=stext?et.item as etab:et;
-                  if(etab.url.includes(stext))
-                return (
-                    <>
-                    {/* <tr> */}
-                    {/* <td className='text-clip overflow-hidden'>{titem.tablist[tinfo].url}</td>   */}
-                    {/* <td> */}
-                        <p>
-                            <a href={etab.url}>{etab.title}</a>
-                        </p>
-                        {/* </td> */}
-                    {/* </tr> */}
-                    </>
-                );
-                })}
+
+    if(isError){
+        return (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                Error loading sessions. Please try again.
+            </div>
+        );
+    }
+
+    let ddata=JSON.parse((data.data))
+    ddata.map((eitem: any) => {
+        let item: items = JSON.parse(eitem);
+        completetabs=completetabs.concat(item.tablist)
+        sessionlist.push({
+            sname:item.sessionname,
+            bname:item.browsername,
+            slength:item.tablist.length
+        });
+    });
+
+    const fuse = new Fuse(completetabs, options);
+    const result = stext?fuse.search(stext):[];
+    popresults=result;
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="mb-8">
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                        </svg>
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search tabs by title or URL..."
+                        value={stext}
+                        onChange={(event) => setstext(event.target.value)}
+                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                    />
                 </div>
-                {/* </table> */}
-                </>
+            </div>
+
+            {stext && popresults.length > 0 && (
+                <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Search Results ({popresults.length})</h3>
+                    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                        {popresults.map((eitem: FuseResult<etab>, index: number) => {
+                            let etab = eitem.item;
+                            return (
+                                <div key={index} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                                    <h4 className="font-medium text-gray-900 truncate mb-2">{etab.title}</h4>
+                                    <a 
+                                        href={etab.url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-sm text-indigo-600 hover:text-indigo-800 truncate block"
+                                    >
+                                        {etab.url}
+                                    </a>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Browser Sessions</h2>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {sessionlist.map((slist: SessionList, index: number) => (
+                        <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                            <div 
+                                className="p-4 cursor-pointer hover:bg-gray-50"
+                                onClick={() => setshowdivname(showdivname === slist.sname ? "" : slist.sname)}
+                            >
+                                <div className="flex items-center justify-between mb-2">
+                                    <h3 className="font-semibold text-lg text-gray-900 truncate">{slist.sname}</h3>
+                                    <svg 
+                                        className={`h-5 w-5 text-gray-400 transform transition-transform ${showdivname === slist.sname ? 'rotate-180' : ''}`} 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        viewBox="0 0 20 20" 
+                                        fill="currentColor"
+                                    >
+                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {slist.bname}
+                                    </span>
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        {slist.slength} tabs
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {ddata.map((item: any, index: number) => {
+                let titem: items = JSON.parse(item);
+                const fuse = new Fuse(titem.tablist, options);
+                const result = stext ? fuse.search(stext) : titem.tablist;
+                
+                return (
+                    <div 
+                        key={index}
+                        className={classnames(
+                            showdivname === titem.sessionname ? "block" : "hidden",
+                            "mt-6"
+                        )}
+                    >
+                        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <div className="px-6 py-4 border-b border-gray-200">
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                    {titem.sessionname} - {titem.browsername}
+                                </h3>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    {Array.isArray(result) ? result.length : 0} tabs
+                                </p>
+                            </div>
+                            <div className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+                                {(Array.isArray(result) ? result : []).map((et: any, tabIndex: number) => {
+                                    let etab: etab = stext ? et.item : et;
+                                    return (
+                                        <div key={tabIndex} className="px-6 py-4 hover:bg-gray-50">
+                                            <h4 className="font-medium text-gray-900 mb-1">{etab.title}</h4>
+                                            <a 
+                                                href={etab.url} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="text-sm text-indigo-600 hover:text-indigo-800 truncate block"
+                                            >
+                                                {etab.url}
+                                            </a>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
                 );
             })}
-           
-          </>
-          );
-    }
+        </div>
+    );
 }
-// function eachitem(ddata){
-//     console.log("eachitem---->"+ddata)
-//     // const [showdivname,setshowdivname] = React.useState("")
-
-//     ddata.forEach(item => {
-//         let titem=JSON.parse(item);
-
-//         return (
-//         <button onClick={()=>{setshowdivname(titem.sessionname);console.log(showdivname)}}>{titem.sessionname}_{titem.browsername}_{titem.tablist.length}</button>);
-//       });
-// }

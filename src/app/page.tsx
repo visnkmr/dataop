@@ -1,8 +1,6 @@
 "use client"
-import Image from 'next/image'
-import React, { useEffect } from 'react';
+import React from 'react';
 import axios from "axios";
-// import {ListSessions} from '@/components/listsessions';
 const ListLinks = dynamic(() => import('../components/listlinks'), {
   ssr: false,
 });
@@ -179,57 +177,58 @@ const addToDb=(event:React.FormEvent)=> {
   //   console.error(error);
   // });
   return (
-    <main className="flex flex-col items-center"> 
-      {!showall ? (
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-        <p>{ss}</p>
-        {/* <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={()=>{setsa(false); setuname("");}}>logout</button> */}
-          
+    <>
+      {showall ? (
+        <LoginButton/>
+      ) : (
+        <div className="min-h-screen bg-gray-50">
+          <nav className="bg-white shadow-sm border-b border-gray-200">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center h-16">
+                <div className="flex items-center">
+                  <h1 className="text-xl font-bold text-gray-900">DataOp</h1>
+                </div>
+                <div className="flex items-center space-x-4">
+                  {ss && (
+                    <div className="text-sm text-gray-600">
+                      {ss}
+                    </div>
+                  )}
+                  <a 
+                    href="/api/auth/logout"
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  >
+                    Logout
+                  </a>
+                </div>
+              </div>
+            </div>
+          </nav>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Add New URL</h2>
+              <form onSubmit={addToDb} className="flex gap-3">
+                <input 
+                  id="url" 
+                  name="url" 
+                  placeholder="Enter URL here..." 
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  required
+                />
+                <button 
+                  type="submit" 
+                  className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Add to Database
+                </button>
+              </form>
+            </div>
+
+            <ListLinks username={user?.sub || ""}/>
+          </div>
         </div>
-      </div>
-) : null}
-      {/* {!showall ? (
-  <div>
-    <form className='grid grid-flow-row gap-2'>
-      <input id="username" name="username" placeholder="Username" className='h-12 p-2 rounded-md text-black'/>
-      <input type="password" id="password" name="password" placeholder="Password" className='h-12 p-2 rounded-md text-black' />
-      <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={handleSignIn}>Login</button>
-    </form>
-    
-    <button type="button" className='p-2 h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={()=>setcreateuser(true)}>createuser</button>
-  </div>
-) : null}
-{showcreateuser ? (
-  <div>
-    <form className='grid grid-flow-row gap-2'>
-      <input id="nuusername" name="username" placeholder="Username" className='h-12 p-2 rounded-md text-black'/>
-      <input type="password" id="nupassword" name="password" placeholder="Password" className='h-12 p-2 rounded-md text-black' />
-      <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={createUser}>Create User</button>
-    </form>
-  </div>
-) : null} */}
-{showall ? (<LoginButton/>):null}
-{!showall ? (<a href="/api/auth/logout">Logout</a>):null}
-
- {!showall?(
-<>
-<form className='grid grid-flow-row gap-2'>
-      <input id="url" name="url" placeholder="enter url here" className='h-12 p-2 rounded-md text-black'/>
-      <button type="submit" className='h-10 px-6 font-semibold rounded-md bg-blue-600' onClick={addToDb}>Add to db</button>
-    </form>
-</>
-  ):null} 
-  
-  
-  {!showall?(
-<>
-      
-      <ListLinks username={user?.sub}/>
-
-</>
-  ):null}
-      
-    </main>
+      )}
+    </>
   )
 }
