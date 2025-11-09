@@ -74,7 +74,7 @@ const addToDb=(event:React.FormEvent)=> {
   const url = document.getElementById('url') as HTMLInputElement;
   axios.request({
     method: "post",
-    url: `https://listallfrompscale.vercel.app/api/update`,
+    url: `https://listallfrompscale-git-othernew-visnkmrs-projects.vercel.app/api/update`,
     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
     data: {uid: user?.sub, datatoadd: url.value}
    
