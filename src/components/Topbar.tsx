@@ -4,14 +4,14 @@ import classnames from "classnames";
 import Fuse, { FuseResult } from "fuse.js"
 
 interface etab {
-    title:string,
-    url:string
+    title: string,
+    url: string
 };
 
-interface items{
-    sessionname:string,
-    browsername:string,
-    tablist:Array<etab>
+interface items {
+    sessionname: string,
+    browsername: string,
+    tablist: Array<etab>
 }
 
 interface SessionList {
@@ -20,23 +20,23 @@ interface SessionList {
     slength: number;
 }
 
-export default function Topbar({username}: {username: string}){
-    var {isLoading,isError,data}=ListSessions(username);
-    const [showdivname,setshowdivname] = React.useState("");
-    const [stext,setstext] = React.useState("")
+export default function Topbar({ username }: { username: string }) {
+    var { isLoading, isError, data } = ListSessions(username);
+    const [showdivname, setshowdivname] = React.useState("");
+    const [stext, setstext] = React.useState("")
     let sessionlist: SessionList[] = [];
-    
+
     const options = {
         threshold: 0.15,
         ignoreLocation: true,
         findAllMatches: true,
         includeScore: false,
-        keys: ['title','url']
-      };
-      var completetabs: etab[] = [];
-      var popresults: FuseResult<etab>[] = [];
-      
-    if(isLoading){
+        keys: ['title', 'url']
+    };
+    var completetabs: etab[] = [];
+    var popresults: FuseResult<etab>[] = [];
+
+    if (isLoading) {
         return (
             <div className="flex justify-center items-center h-64">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -44,7 +44,7 @@ export default function Topbar({username}: {username: string}){
         );
     }
 
-    if(isError){
+    if (isError) {
         return (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                 Error loading sessions. Please try again.
@@ -52,20 +52,50 @@ export default function Topbar({username}: {username: string}){
         );
     }
 
-    let ddata=JSON.parse((data.data))
+    let ddata = JSON.parse((data.data))
+    let allSessions: items[] = [];
+    let savedLinks: etab[] = [];
+
     ddata.map((eitem: any) => {
-        let item: items = JSON.parse(eitem);
-        completetabs=completetabs.concat(item.tablist)
-        sessionlist.push({
-            sname:item.sessionname,
-            bname:item.browsername,
-            slength:item.tablist.length
-        });
+        try {
+            let item: items = JSON.parse(eitem);
+            if (item.tablist) {
+                allSessions.push(item);
+                completetabs = completetabs.concat(item.tablist);
+                sessionlist.push({
+                    sname: item.sessionname,
+                    bname: item.browsername,
+                    slength: item.tablist.length
+                });
+            }
+        } catch (e) {
+            if (typeof eitem === 'string' && (eitem.startsWith('http') || eitem.startsWith('www'))) {
+                savedLinks.push({
+                    title: eitem,
+                    url: eitem
+                });
+            }
+        }
     });
 
+    if (savedLinks.length > 0) {
+        const savedSession: items = {
+            sessionname: "Saved Links",
+            browsername: "Mixed",
+            tablist: savedLinks
+        };
+        allSessions.push(savedSession);
+        sessionlist.push({
+            sname: savedSession.sessionname,
+            bname: savedSession.browsername,
+            slength: savedSession.tablist.length
+        });
+        completetabs = completetabs.concat(savedLinks);
+    }
+
     const fuse = new Fuse(completetabs, options);
-    const result = stext?fuse.search(stext):[];
-    popresults=result;
+    const result = stext ? fuse.search(stext) : [];
+    popresults = result;
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -95,9 +125,9 @@ export default function Topbar({username}: {username: string}){
                             return (
                                 <div key={index} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                                     <h4 className="font-medium text-gray-900 truncate mb-2">{etab.title}</h4>
-                                    <a 
-                                        href={etab.url} 
-                                        target="_blank" 
+                                    <a
+                                        href={etab.url}
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-sm text-indigo-600 hover:text-indigo-800 truncate block"
                                     >
@@ -115,16 +145,16 @@ export default function Topbar({username}: {username: string}){
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {sessionlist.map((slist: SessionList, index: number) => (
                         <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-                            <div 
+                            <div
                                 className="p-4 cursor-pointer hover:bg-gray-50"
                                 onClick={() => setshowdivname(showdivname === slist.sname ? "" : slist.sname)}
                             >
                                 <div className="flex items-center justify-between mb-2">
                                     <h3 className="font-semibold text-lg text-gray-900 truncate">{slist.sname}</h3>
-                                    <svg 
-                                        className={`h-5 w-5 text-gray-400 transform transition-transform ${showdivname === slist.sname ? 'rotate-180' : ''}`} 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        viewBox="0 0 20 20" 
+                                    <svg
+                                        className={`h-5 w-5 text-gray-400 transform transition-transform ${showdivname === slist.sname ? 'rotate-180' : ''}`}
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
                                         fill="currentColor"
                                     >
                                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -144,13 +174,12 @@ export default function Topbar({username}: {username: string}){
                 </div>
             </div>
 
-            {ddata.map((item: any, index: number) => {
-                let titem: items = JSON.parse(item);
+            {allSessions.map((titem: items, index: number) => {
                 const fuse = new Fuse(titem.tablist, options);
                 const result = stext ? fuse.search(stext) : titem.tablist;
-                
+
                 return (
-                    <div 
+                    <div
                         key={index}
                         className={classnames(
                             showdivname === titem.sessionname ? "block" : "hidden",
@@ -172,9 +201,9 @@ export default function Topbar({username}: {username: string}){
                                     return (
                                         <div key={tabIndex} className="px-6 py-4 hover:bg-gray-50">
                                             <h4 className="font-medium text-gray-900 mb-1">{etab.title}</h4>
-                                            <a 
-                                                href={etab.url} 
-                                                target="_blank" 
+                                            <a
+                                                href={etab.url}
+                                                target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="text-sm text-indigo-600 hover:text-indigo-800 truncate block"
                                             >
