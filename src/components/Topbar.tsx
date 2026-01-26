@@ -20,8 +20,8 @@ interface SessionList {
     slength: number;
 }
 
-export default function Topbar({ username }: { username: string }) {
-    var { isLoading, isError, data } = ListSessions(username);
+export default function Topbar({ username, accessToken }: { username: string, accessToken: string }) {
+    var { isLoading, isError, data } = ListSessions(username, accessToken);
     const [showdivname, setshowdivname] = React.useState("");
     const [stext, setstext] = React.useState("")
     let sessionlist: SessionList[] = [];

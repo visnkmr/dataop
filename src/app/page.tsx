@@ -8,12 +8,29 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 
 import dynamic from 'next/dynamic';
 import LoginButton from '@/components/loginbutton';
+import { useAccessToken, decodeJWT } from '@/hooks/useAccessToken';
 
 export default function Home() {
    const { user, error, isLoading } = useUser();
+   const { accessToken, isLoading: tokenLoading } = useAccessToken();
 
   console.log(user)
-  let showall=!user;
+  let showall=!user || !accessToken;
+  
+  // Test function to manually trigger JWT decoding
+  const testJWT = () => {
+    if (accessToken) {
+      console.log('🧪 Manual JWT Test Triggered:');
+      decodeJWT(accessToken);
+    } else {
+      console.log('❌ No JWT token available for testing');
+    }
+  };
+  
+  // Make test function available in browser console
+  if (typeof window !== 'undefined') {
+    (window as any).testJWT = testJWT;
+  }
   console.log(showall)
   
   const [ss, setss] = React.useState("")
@@ -71,12 +88,20 @@ export default function Home() {
 const addToDb=(event:React.FormEvent)=> {
   event.preventDefault();
   
+  if (!accessToken) {
+    setss("Authentication required. Please refresh the page.");
+    return;
+  }
+  
   const url = document.getElementById('url') as HTMLInputElement;
   axios.request({
     method: "post",
     url: `https://listallfrompscale-git-othernew-visnkmrs-projects.vercel.app/api/update`,
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    data: {uid: user?.sub, datatoadd: url.value}
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${accessToken}`
+    },
+    data: {datatoadd: url.value}
    
   })
   .then(response => 
@@ -194,6 +219,14 @@ const addToDb=(event:React.FormEvent)=> {
                       {ss}
                     </div>
                   )}
+                  {accessToken && (
+                    <button
+                      onClick={() => decodeJWT(accessToken)}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                    >
+                      Test JWT
+                    </button>
+                  )}
                   <a 
                     href="/api/auth/logout"
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
@@ -225,7 +258,7 @@ const addToDb=(event:React.FormEvent)=> {
               </form>
             </div>
 
-            <ListLinks username={user?.sub || ""}/>
+            <ListLinks username={user?.sub || ""} accessToken={accessToken || ""}/>
           </div>
         </div>
       )}
